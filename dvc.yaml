@@ -1,0 +1,23 @@
+stages:
+  fetch_data:
+    cmd: python fetch_data.py
+    deps:
+      - funcs/process_data_funcs.py
+      - funcs/dvc_funcs.py
+      - local_settings.py
+    outs:
+      - data/raw/raw_data.csv
+
+  process_data:
+    cmd: python process_data.py
+    deps:
+      - funcs/process_data_funcs.py
+      - funcs/dvc_funcs.py
+      - data/raw/raw_data.csv
+    outs:
+      - data/processed/test_transformed_combined.csv
+      - data/processed/train_transformed_combined.csv
+      - data/processed/X_train_transformed.csv
+      - data/processed/X_test_transformed.csv
+      - data/processed/y_train_transformed.csv
+      - data/processed/y_test_transformed.csv

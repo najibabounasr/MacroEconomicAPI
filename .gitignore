@@ -1,0 +1,25 @@
+# Ignore Python environment directories
+/env/
+.venv/
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore model directories
+/models
+
+# Ignore DVC caches and logs
+.cache/
+.dvc/
+.dvc/cache
+.dvc/tmp
+
+# Ignore all CSV files in specific directories
+data/raw/*.csv
+data/processed/*.csv
+data/engineered/*.csv
+
+# Ignore any other unwanted files
+*.log
+*.bak
+*.swp

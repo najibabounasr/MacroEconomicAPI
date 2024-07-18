@@ -1,0 +1,22 @@
+schema: '2.0'
+stages:
+  fetch_data:
+    cmd: python fetch_data.py
+    deps:
+    - path: funcs/dvc_funcs.py
+      hash: md5
+      md5: 4ff83a192af24af0627bf02aa93f6906
+      size: 3106
+    - path: funcs/process_data_funcs.py
+      hash: md5
+      md5: 5ede65e06301f884850ab9213912107c
+      size: 11544
+    - path: local_settings.py
+      hash: md5
+      md5: d7a54527ff312f4eceb88f2aaeda4164
+      size: 1241
+    outs:
+    - path: data/raw/raw_data.csv
+      hash: md5
+      md5: 3fbcdd2d4aad873fdc0397832ef6c6c2
+      size: 96114
