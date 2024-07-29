@@ -238,7 +238,7 @@ def evaluate_transformations(series):
         'Simple Differencing': series.diff().dropna(),
         'Rolling Mean Subtraction': (series - series.rolling(window=7).mean()).dropna(),
         'Rolling Mean Subtraction + Differencing': (series - series.rolling(window=7).mean()).diff().dropna()
-    }
+    }           
 
     results = {}
     for method, transformed_series in methods.items():

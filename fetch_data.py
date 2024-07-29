@@ -4,10 +4,9 @@ from local_settings import settings
 from fredapi import Fred
 import os
 from funcs.dvc_funcs import run_dvc_command, dagshub_initialization, upload_to_dagshub
+from funcs.api_funcs import get_target_arg
 from dagshub import get_repo_bucket_client
 import sys
-
-
 
 def fetch_all_data(target_feature):
     # Initialize FRED API with your API key
@@ -43,15 +42,21 @@ def fetch_all_data(target_feature):
     combined_data.to_csv('data/raw/raw_data.csv')
 
     # Upload raw data to Dagshub
-    upload_to_dagshub('data/raw/raw_data.csv', 'data/raw/raw_data.csv')
+    s3 = get_repo_bucket_client("najibabounasr/MacroEconomicAPI")
+    s3.upload_file(
+        Bucket="MacroEconomicAPI",
+        Filename="data/raw/raw_data.csv",
+        Key="data/raw/raw_data.csv",
+    )
 
     print("Data fetching complete and tracked with DVC and Dagshub.")
     return combined_data
 
 def main():
     dagshub_initialization()
-    # This function is used to test the script independently
-    target_feature = 'GDP'  # Example target feature
+    if len(sys.argv) < 2:
+        raise ValueError("No target feature provided. Please specify the target feature.")
+    target_feature = get_target_arg()
     fetch_all_data(target_feature)
     print("Fetch Data Stage Completed")
 

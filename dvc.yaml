@@ -21,3 +21,16 @@ stages:
       - data/processed/X_test_transformed.csv
       - data/processed/y_train_transformed.csv
       - data/processed/y_test_transformed.csv
+
+  engineer_features:
+    cmd: python engineer_features.py
+    deps:
+      - funcs/engineer_features_funcs.py
+      - funcs/api_funcs.py
+      - data/processed/X_train_transformed.csv
+      - data/processed/X_test_transformed.csv
+      - data/processed/y_train_transformed.csv
+      - data/processed/y_test_transformed.csv
+    outs:
+      - data/processed/engineered_X_train.csv
+      - data/processed/engineered_X_test.csv
