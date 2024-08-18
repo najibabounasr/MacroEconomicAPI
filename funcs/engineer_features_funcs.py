@@ -12,35 +12,46 @@ import optuna
 import warnings
 from best_params import xgboost_params, lightgbm_params
 import logging
-
+    
 # Function to optimize parameters using Optuna
-def optimize_params(trial, model_name):
-    if model_name == 'XGBoost':
-        params = {
-            'max_depth': trial.suggest_int('max_depth', 3, 10),
-            'learning_rate': trial.suggest_loguniform('learning_rate', 1e-4, 1e-1),
-            'n_estimators': trial.suggest_int('n_estimators', 50, 300),
-            'min_child_weight': trial.suggest_int('min_child_weight', 1, 10),
-            'subsample': trial.suggest_uniform('subsample', 0.5, 1.0),
-            'colsample_bytree': trial.suggest_uniform('colsample_bytree', 0.5, 1.0),
-            'reg_alpha': trial.suggest_loguniform('reg_alpha', 1e-5, 1e1),
-            'reg_lambda': trial.suggest_loguniform('reg_lambda', 1e-5, 1e1)
-        }
-    elif model_name == 'LightGBM':
-        params = {
-            'num_leaves': trial.suggest_int('num_leaves', 20, 300),
-            'learning_rate': trial.suggest_loguniform('learning_rate', 1e-4, 1e-1),
-            'n_estimators': trial.suggest_int('n_estimators', 50, 300),
-            'max_depth': trial.suggest_int('max_depth', 3, 20),
-            'min_child_samples': trial.suggest_int('min_child_samples', 5, 100),
-            'subsample': trial.suggest_uniform('subsample', 0.5, 1.0),
-            'colsample_bytree': trial.suggest_uniform('colsample_bytree', 0.5, 1.0),
-            'reg_alpha': trial.suggest_loguniform('reg_alpha', 1e-5, 1e1),
-            'reg_lambda': trial.suggest_loguniform('reg_lambda', 1e-5, 1e1)
-        }
-    else:
-        raise ValueError(f"Unknown model name: {model_name}")
-    return params
+def optimize_params(model_name, X_train_scaled, y_train, X_test_scaled, y_test,n_trials):
+    def objective(trial):
+        if model_name == 'XGBoost':
+            params = {
+                'max_depth': trial.suggest_int('max_depth', 3, 10),
+                'learning_rate': trial.suggest_loguniform('learning_rate', 1e-4, 1e-1),
+                'n_estimators': trial.suggest_int('n_estimators', 50, 300),
+                'min_child_weight': trial.suggest_int('min_child_weight', 1, 10),
+                'subsample': trial.suggest_uniform('subsample', 0.5, 1.0),
+                'colsample_bytree': trial.suggest_uniform('colsample_bytree', 0.5, 1.0),
+                'reg_alpha': trial.suggest_loguniform('reg_alpha', 1e-5, 1e1),
+                'reg_lambda': trial.suggest_loguniform('reg_lambda', 1e-5, 1e1)
+            }
+            model = XGBRegressor(**params, verbosity=0)
+        elif model_name == 'LightGBM':
+            params = {
+                'num_leaves': trial.suggest_int('num_leaves', 20, 300),
+                'learning_rate': trial.suggest_loguniform('learning_rate', 1e-4, 1e-1),
+                'n_estimators': trial.suggest_int('n_estimators', 50, 300),
+                'max_depth': trial.suggest_int('max_depth', 3, 20),
+                'min_child_samples': trial.suggest_int('min_child_samples', 5, 100),
+                'subsample': trial.suggest_uniform('subsample', 0.5, 1.0),
+                'colsample_bytree': trial.suggest_uniform('colsample_bytree', 0.5, 1.0),
+                'reg_alpha': trial.suggest_loguniform('reg_alpha', 1e-5, 1e1),
+                'reg_lambda': trial.suggest_loguniform('reg_lambda', 1e-5, 1e1)
+            }
+            model = LGBMRegressor(**params, verbosity=-1)
+        else:
+            raise ValueError(f"Unknown model name: {model_name}")
+
+        model.fit(X_train_scaled, y_train)
+        y_pred = model.predict(X_test_scaled)
+        return mean_squared_error(y_test, y_pred)
+
+    study = optuna.create_study(direction='minimize')
+    study.optimize(objective, n_trials,n_jobs=1)
+    return study.best_params
+
 
 # Function to compute MSE scores
 def compute_mse_scores(X_train, X_test, y_train, y_test, features):
@@ -56,22 +67,23 @@ def compute_mse_scores(X_train, X_test, y_train, y_test, features):
     mse_scores = {'XGBoost': [], 'LightGBM': []}
     best_params = {}
 
-    def objective(trial, model_name):
-        params = optimize_params(trial, model_name)
-        if model_name == 'XGBoost':
-            model = XGBRegressor(**params, verbosity=0)
-        elif model_name == 'LightGBM':
-            model = LGBMRegressor(**params, verbose=-1)
-        model.fit(X_train_scaled, y_train)
-        y_pred = model.predict(X_test_scaled)
-        mse = mean_squared_error(y_test, y_pred)
-        mse_scores[model_name].append(mse)
-        return mse
+    # def objective(trial, model_name):
+    #     # params = optimize_params(trial, model_name)
+    #     params = optimize_params(model_name, X_train_scaled, y_train, X_test_scaled, y_test,n_trials=5)
+    #     if model_name == 'XGBoost':
+    #         model = XGBRegressor(**params, verbosity=0)
+    #     elif model_name == 'LightGBM':
+    #         model = LGBMRegressor(**params, verbose=-1)
+    #     model.fit(X_train_scaled, y_train)
+    #     y_pred = model.predict(X_test_scaled)
+    #     mse = mean_squared_error(y_test, y_pred)
+    #     mse_scores[model_name].append(mse)
+    #     return mse
 
-    for model_name in ['XGBoost', 'LightGBM']:
-        study = optuna.create_study(direction='minimize')
-        study.optimize(lambda trial: objective(trial, model_name), n_trials=50)
-        best_params[model_name] = study.best_params
+    # for model_name in ['XGBoost', 'LightGBM']:
+    #     study = optuna.create_study(direction='minimize')
+    #     study.optimize(lambda trial: objective(trial, model_name), n_trials=50)
+    #     best_params[model_name] = study.best_params
 
     aggregated_mse = sum([np.mean(mse_scores[model]) for model in mse_scores])
     mse_scores = {model: np.mean(scores) for model, scores in mse_scores.items()}

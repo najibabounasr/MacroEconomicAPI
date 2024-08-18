@@ -1,0 +1,10 @@
+features
+"PCEPI__fft_coefficient__attr_""angle""__coeff_0"
+CUSR0000SAH1__large_standard_deviation__r_0.25
+CUMFNS__large_standard_deviation__r_0.30000000000000004
+CPILFESL__large_standard_deviation__r_0.30000000000000004
+DGS10__longest_strike_below_mean
+HOUST__number_peaks__n_50
+CUMFNS__has_duplicate_min
+BAA__sum_of_reoccurring_values
+CPIAUCSL__large_standard_deviation__r_0.4

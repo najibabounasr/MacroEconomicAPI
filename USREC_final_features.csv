@@ -1,0 +1,4 @@
+features
+FEDFUNDS__variance_larger_than_standard_deviation
+FEDFUNDS__has_duplicate_max
+FEDFUNDS__has_duplicate_min

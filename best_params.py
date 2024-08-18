@@ -1,2 +1,3 @@
-xgboost_params = {'max_depth': 6, 'learning_rate': 0.03386166645147473, 'n_estimators': 223, 'min_child_weight': 8, 'subsample': 0.5010333072298043, 'colsample_bytree': 0.759090038013688, 'reg_alpha': 0.0006983829594394185, 'reg_lambda': 0.000229555936097098}
-lightgbm_params = {'num_leaves': 290, 'learning_rate': 0.027300728563685272, 'n_estimators': 142, 'max_depth': 15, 'min_child_samples': 17, 'subsample': 0.6494993959247016, 'colsample_bytree': 0.8672852640596774, 'reg_alpha': 1.2740038238189685e-05, 'reg_lambda': 0.00028305833752501953}
+xgboost_params = {'max_depth': 9, 'learning_rate': 0.016810144010995204, 'n_estimators': 193, 'min_child_weight': 3, 'subsample': 0.5865511380196138, 'colsample_bytree': 0.9177433017782509, 'reg_alpha': 0.012513778476694921, 'reg_lambda': 8.577576991968611e-05}
+lightgbm_params = {'num_leaves': 119, 'learning_rate': 0.0832469304666387, 'n_estimators': 71, 'max_depth': 3, 'min_child_samples': 18, 'subsample': 0.7402007213047204, 'colsample_bytree': 0.9405245932820381, 'reg_alpha': 0.000756445935013929, 'reg_lambda': 0.0002590470172405959}
+

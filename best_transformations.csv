@@ -1,2 +1,4 @@
 ,ADF Statistic,Best Method
 EXPGS,-11.380107184275378,Simple Differencing
+
+FEDFUNDS, params: 0.0, XGBoost,Simple ,

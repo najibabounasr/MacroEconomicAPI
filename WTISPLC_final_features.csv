@@ -1,0 +1,15 @@
+features
+"WTISPLC__change_quantiles__f_agg_""mean""__isabs_False__qh_1.0__ql_0.0"
+WTISPLC__last_location_of_minimum
+"INDPRO__change_quantiles__f_agg_""mean""__isabs_True__qh_0.6__ql_0.4"
+GCE__index_mass_quantile__q_0.4
+"PCEPILFE__change_quantiles__f_agg_""mean""__isabs_False__qh_0.8__ql_0.0"
+CPIAUCSL__ratio_beyond_r_sigma__r_2.5
+BAA__energy_ratio_by_chunks__num_segments_10__segment_focus_1
+CPIAUCSL__ratio_value_number_to_time_series_length
+"FGCE__change_quantiles__f_agg_""var""__isabs_True__qh_0.6__ql_0.0"
+FGCE__quantile__q_0.9
+"PAYEMS__change_quantiles__f_agg_""var""__isabs_False__qh_0.8__ql_0.0"
+IMPGS__percentage_of_reoccurring_datapoints_to_all_datapoints
+CPIAUCSL__time_reversal_asymmetry_statistic__lag_3
+WTISPLC__energy_ratio_by_chunks__num_segments_10__segment_focus_4

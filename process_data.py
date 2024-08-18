@@ -1,25 +1,16 @@
 import os
 import pandas as pd
 import numpy as np
-import configparser
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from funcs.process_data_funcs import (
     impute_missing_values_spline, deflate_nominal_values, apply_log_transformations,
     apply_best_transformations, cap_outliers
 )
-from funcs.dvc_funcs import run_dvc_command, dagshub_initialization, load_dvc_config, check_remote_config, verify_dvc_remote
-from funcs.api_funcs import get_target_arg, get_feature_addition_rounds_arg, get_feature_dropping_threshold_arg, get_tsfresh_fc_params_arg
+from funcs.dvc_funcs import dagshub_initialization
 from dagshub import get_repo_bucket_client
-import sys
 
-def main(target):
-    # Initialize Dagshub and DVC
-    dagshub_initialization()
-
-    # Load combined data from DVC
-    combined_data = pd.read_csv('data/raw/raw_data.csv', parse_dates=True, index_col='Date')
-
+def process_data_for_target(target, combined_data):
     # Perform train/test split
     X = combined_data.drop(columns=[target])
     y = combined_data[[target]]
@@ -28,18 +19,14 @@ def main(target):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, shuffle=False)
 
     # Impute missing values
-    quarterly_columns = ['GDP', 'PRFI', 'PNFI', 'EXPGS', 'IMPGS', 'GCE', 'FGCE', 'GDPCTPI']
-    treasury_yield_columns = ['DGS2', 'DGS5', 'DGS10']
+    columns_to_impute = X_train.columns  # Impute all columns
+    for column in columns_to_impute:
+        X_train = impute_missing_values_spline(X_train, column)
+        X_test = impute_missing_values_spline(X_test, column)
+    y_train = impute_missing_values_spline(y_train, target)
+    y_test = impute_missing_values_spline(y_test, target)
 
-    for column in quarterly_columns + treasury_yield_columns:
-        if column in X_train.columns:
-            X_train = impute_missing_values_spline(X_train, column)
-            X_test = impute_missing_values_spline(X_test, column)
-        elif column in y_train.columns:  # Handle case where target is one of the columns
-            y_train = impute_missing_values_spline(y_train, column)
-            y_test = impute_missing_values_spline(y_test, column)
-
-    # Name the index column Date
+    # Name the index column 'Date'
     for df in [X_train, X_test, y_train, y_test]:
         df.index.name = 'Date'
 
@@ -47,11 +34,11 @@ def main(target):
     train_combined = pd.concat([X_train, y_train], axis=1)
     test_combined = pd.concat([X_test, y_test], axis=1)
 
-    # Ensure CPIAUCSL is included in the dataframes
+    # Deflate nominal values
     cpi_col_name = 'CPIAUCSL'
-    columns_to_deflate = ['GDP', 'PCE', 'PRFI', 'PNFI', 'EXPGS', 'IMPGS', 'GCE', 'FGCE', 'DSPI']
-
-    # Handle deflation based on conditions
+    columns_to_deflate = list(set(X_train.columns).intersection(
+        ['GDP', 'PCE', 'PRFI', 'PNFI', 'EXPGS', 'IMPGS', 'GCE', 'FGCE', 'DSPI']
+    ))
     if target in columns_to_deflate:
         deflated_train = deflate_nominal_values(train_combined[[target, cpi_col_name]], cpi_col_name, [target])
         deflated_test = deflate_nominal_values(test_combined[[target, cpi_col_name]], cpi_col_name, [target])
@@ -63,8 +50,9 @@ def main(target):
     test_combined = deflate_nominal_values(test_combined, cpi_col_name, columns_to_deflate)
 
     # Apply logarithmic transformations
-    columns_to_transform = ['GDP', 'PCE', 'PRFI', 'PNFI', 'EXPGS', 'IMPGS', 'GCE', 'FGCE', 'HOUST', 'DSPI']
-
+    columns_to_transform = list(set(X_train.columns).intersection(
+        ['GDP', 'PCE', 'PRFI', 'PNFI', 'EXPGS', 'IMPGS', 'GCE', 'FGCE', 'HOUST', 'DSPI']
+    ))
     if target in columns_to_transform:
         train_combined[target] = apply_log_transformations(train_combined[[target]], [target])
         test_combined[target] = apply_log_transformations(test_combined[[target]], [target])
@@ -86,7 +74,7 @@ def main(target):
     y_train[target] = scaler.fit_transform(y_train[target].values.reshape(-1, 1))
     y_test[target] = scaler.transform(y_test[target].values.reshape(-1, 1))
 
-    # Apply Percentage Change
+    # Apply Percentage Change (after splitting to avoid data leakage)
     X_train_pct_change = X_train.pct_change().dropna()
     X_test_pct_change = X_test.pct_change().dropna()
     y_train_pct_change = y_train.pct_change().dropna()
@@ -110,57 +98,38 @@ def main(target):
     train_transformed_combined = pd.concat([X_train_transformed, y_train_transformed], axis=1)
     test_transformed_combined = pd.concat([X_test_transformed, y_test_transformed], axis=1)
 
-    # Save the transformed data locally
-    if not os.path.exists('data/processed'):
-        os.makedirs('data/processed')
-    train_transformed_combined.to_csv('data/processed/train_transformed_combined.csv', index=True)
-    test_transformed_combined.to_csv('data/processed/test_transformed_combined.csv', index=True)
+    # Save the transformed data locally in a subdirectory for the target
+    save_path = f'data/processed/{target}_transformed'
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    train_transformed_combined.to_csv(f'{save_path}/train_transformed_combined.csv', index=True)
+    test_transformed_combined.to_csv(f'{save_path}/test_transformed_combined.csv', index=True)
 
     # Upload to Dagshub storage
     s3 = get_repo_bucket_client("najibabounasr/MacroEconomicAPI")
     s3.upload_file(
         Bucket="MacroEconomicAPI",  # name of the repo
-        Filename="data/processed/train_transformed_combined.csv",  # local path of file to upload
-        Key="data/processed/train_transformed_combined.csv",  # remote path where to upload the file
+        Filename=f'{save_path}/train_transformed_combined.csv',  # local path of file to upload
+        Key=f'data/processed/{target}/train_transformed_combined.csv',  # remote path where to upload the file
     )
     s3.upload_file(
         Bucket="MacroEconomicAPI",
-        Filename="data/processed/test_transformed_combined.csv",
-        Key="data/processed/test_transformed_combined.csv",
+        Filename=f'{save_path}/test_transformed_combined.csv',
+        Key=f'data/processed/{target}/test_transformed_combined.csv',
     )
 
-    # Save individual transformed datasets locally
-    X_train_transformed.to_csv('data/processed/X_train_transformed.csv', index=True)
-    X_test_transformed.to_csv('data/processed/X_test_transformed.csv', index=True)
-    y_train_transformed.to_csv('data/processed/y_train_transformed.csv', index=True)
-    y_test_transformed.to_csv('data/processed/y_test_transformed.csv', index=True)
+def main():
+    # Initialize Dagshub and DVC
+    dagshub_initialization()
 
-    # Upload individual datasets to Dagshub storage
-    s3.upload_file(
-        Bucket="MacroEconomicAPI",
-        Filename="data/processed/X_train_transformed.csv",
-        Key="data/processed/X_train_transformed.csv",
-    )
-    s3.upload_file(
-        Bucket="MacroEconomicAPI",
-        Filename="data/processed/X_test_transformed.csv",
-        Key="data/processed/X_test_transformed.csv",
-    )
-    s3.upload_file(
-        Bucket="MacroEconomicAPI",
-        Filename="data/processed/y_train_transformed.csv",
-        Key="data/processed/y_train_transformed.csv",
-    )
-    s3.upload_file(
-        Bucket="MacroEconomicAPI",
-        Filename="data/processed/y_test_transformed.csv",
-        Key="data/processed/y_test_transformed.csv",
-    )
+    # Load combined data from DVC
+    combined_data = pd.read_csv('data/raw/raw_data.csv', parse_dates=True, index_col='Date')
+
+    # Process data for each feature as a target
+    for target in combined_data.columns:
+        process_data_for_target(target, combined_data)
+        print(f"Processed data for target: {target}")
 
 if __name__ == "__main__":
-    dagshub_initialization()
-    if len(sys.argv) < 2:
-        raise ValueError("No target feature provided. Please specify the target feature.")
-    target = get_target_arg()
-    main(target)
+    main()
     print("Process Data Stage Completed")

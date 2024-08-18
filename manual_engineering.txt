@@ -1,0 +1,300 @@
+LETS CONTINUE, WILL GIVE MORE INFO#### 
+==================================================
+
+
+Feature Addition DataFrame for EXPGS: 
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	2	PNFI__longest_strike_below_mean	0.000847	0.001071	0.000224	26.438675
+1	2	DGS2__number_peaks__n_10	0.000858	0.001071	0.000214	24.895557
+2	3	DGS10__energy_ratio_by_chunks__num_segments_10...	0.000726	0.000840	0.000114	15.710731
+3	4	DGS10__energy_ratio_by_chunks__num_segments_10...	0.000676	0.000795	0.000119	17.557128
+4	5	PAYEMS__cid_ce__normalize_True	0.000624	0.000752	0.000128	20.436757
+5	5	DGS10__energy_ratio_by_chunks__num_segments_10...	0.000651	0.000752	0.000102	15.610759
+6	5	PCEPILFE__number_peaks__n_50	0.000657	0.000752	0.000095	14.472526++++
+Round	Feature Dropped	MSE Before Dropping	MSE After Dropping	Improvement	% Improvement
+0	1	IMPGS__energy_ratio_by_chunks__num_segments_10...	0.0012809392927556095	0.0008016332432260106	0.000003	0.255753
+1	2	PNFI__longest_strike_below_mean	0.0010656406992871135	0.0005259978377566056	0.000006	0.536402
+2	3	DGS10__energy_ratio_by_chunks__num_segments_10...	0.0007962663497863478	0.00040496682351247803	0.000036	4.524292
+3	4	DGS2__number_peaks__n_10	0.0007083075575865404	0.00035075480164469306	0.000114	16.027225
+4	4	DGS10__energy_ratio_by_chunks__num_segments_10...	0.0007083075575865404	0.00035075480164469306	0.000045	6.385755
+5	5	DGS10__energy_ratio_by_chunks__num_segments_10...	0.0007083075575865404	0.00035075480164469306	0.000113	15.913755
+6	5	PAYEMS__cid_ce__normalize_True	0.0007083075575865404	0.00035075480164469306	0.000096	13.588319
+7	5	PCEPILFE__number_peaks__n_50	0.0007083075575865404	0.00035075480164469306	0.000049	6.957197######## 
+==================================================
+
+
+Feature Addition DataFrame for HOUST: 
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	2	PCEPI__quantile__q_0.4	20.679575	21.411791	0.732215	3.540766
+1	2	GDP__percentage_of_reoccurring_values_to_all_v...	20.747759	21.411791	0.664032	3.200500
+2	2	GDP__percentage_of_reoccurring_datapoints_to_a...	20.748847	21.411791	0.662944	3.195086
+3	3	GDP__percentage_of_reoccurring_values_to_all_v...	20.544809	21.032877	0.488068	2.375629
+4	3	GDP__ratio_value_number_to_time_series_length	20.566779	21.032877	0.466098	2.266267
+5	3	GDP__percentage_of_reoccurring_datapoints_to_a...	20.567737	21.032877	0.465140	2.261502
+6	4	GDP__percentage_of_reoccurring_values_to_all_v...	20.923722	21.032877	0.109155	0.521680
+7	4	GDP__ratio_value_number_to_time_series_length	20.945693	21.032877	0.087184	0.416241
+8	4	GDP__percentage_of_reoccurring_datapoints_to_a...	20.946651	21.032877	0.086226	0.411647
+9	5	GDP__percentage_of_reoccurring_values_to_all_v...	20.923722	21.032877	0.109155	0.521680
+10	5	GDP__ratio_value_number_to_time_series_length	20.945693	21.032877	0.087184	0.416241
+11	5	GDP__percentage_of_reoccurring_datapoints_to_a...	20.946651	21.032877	0.086226	0.411647+++++ 
+Round	Feature Dropped	MSE Before Dropping	MSE After Dropping	Improvement	% Improvement
+0	2	HOUST__last_location_of_minimum	21.5155204404318	10.610149225877613	0.459289	2.134686
+1	2	GDP__percentage_of_reoccurring_datapoints_to_a...	21.5155204404318	10.610149225877613	0.067384	0.313186
+2	2	GDP__percentage_of_reoccurring_values_to_all_v...	21.5155204404318	10.610149225877613	0.052178	0.242514
+3	3	GDP__percentage_of_reoccurring_values_to_all_v...	21.5155204404318	10.610149225877613	0.083600	0.388556
+4	3	GDP__ratio_value_number_to_time_series_length	21.5155204404318	10.610149225877613	0.080375	0.373569
+5	3	GDP__percentage_of_reoccurring_datapoints_to_a...	21.5155204404318	10.610149225877613	0.077819	0.361686
+6	4	GDP__percentage_of_reoccurring_values_to_all_v...	21.5155204404318	10.610149225877613	0.083600	0.388556
+7	4	GDP__ratio_value_number_to_time_series_length	21.5155204404318	10.610149225877613	0.080375	0.373569
+8	4	GDP__percentage_of_reoccurring_datapoints_to_a...	21.5155204404318	10.610149225877613	0.077819	0.361686
+9	5	GDP__percentage_of_reoccurring_values_to_all_v...	21.5155204404318	10.610149225877613	0.083600	0.388556
+10	5	GDP__ratio_value_number_to_time_series_length	21.5155204404318	10.610149225877613	0.080375	0.373569
+11	5	GDP__percentage_of_reoccurring_datapoints_to_a...	21.5155204404318	10.610149225877613	0.077819	0.361686###### 
+==================================================
+
+
+Feature Addition DataFrame for DSPI: 
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	2	UNRATE__approximate_entropy__m_2__r_0.1	0.000875	0.002019	0.001144	130.661287
+1	2	EXPGS__lempel_ziv_complexity__bins_3	0.000891	0.002019	0.001128	126.652288
+2	3	PAYEMS__energy_ratio_by_chunks__num_segments_1...	0.001844	0.001966	0.000121	6.568504
+3	3	IMPGS__lempel_ziv_complexity__bins_3	0.001847	0.001966	0.000119	6.446384
+4	3	DGS10__percentage_of_reoccurring_values_to_all...	0.001875	0.001966	0.000090	4.819002
+5	4	IMPGS__lempel_ziv_complexity__bins_10	0.001876	0.001918	0.000041	2.209955
+6	4	PCE__energy_ratio_by_chunks__num_segments_10__...	0.001884	0.001918	0.000034	1.803475
+7	5	DGS5__approximate_entropy__m_2__r_0.5	0.001826	0.001868	0.000042	2.321603
+8	5	CUSR0000SAH1__approximate_entropy__m_2__r_0.3	0.001829	0.001868	0.000040	2.167027++++
+Round	Feature Dropped	MSE Before Dropping	MSE After Dropping	Improvement	% Improvement
+0	3	EXPGS__lempel_ziv_complexity__bins_3	0.002150842750891116	0.0010207977920959198	0.000049	2.271649
+1	3	DGS10__percentage_of_reoccurring_values_to_all...	0.002150842750891116	0.0010207977920959198	0.000047	2.195732
+2	3	INDPRO__last_location_of_maximum	0.002150842750891116	0.0010207977920959198	0.000043	1.985031
+3	3	IMPGS__lempel_ziv_complexity__bins_3	0.002150842750891116	0.0010207977920959198	0.000041	1.917510
+4	3	PAYEMS__energy_ratio_by_chunks__num_segments_1...	0.002150842750891116	0.0010207977920959198	0.000024	1.135220
+5	4	IMPGS__lempel_ziv_complexity__bins_10	0.001916844754659175	0.0009649265103450797	0.000038	1.992018
+6	4	PCE__energy_ratio_by_chunks__num_segments_10__...	0.001916844754659175	0.0009649265103450797	0.000023	1.184098###### 
+==================================================
+
+
+Feature Addition DataFrame for DGS5: 
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	3	PNFI__large_standard_deviation__r_0.1500000000...	-0.007819	0.014891	0.022711	-290.438636
+1	5	PNFI__large_standard_deviation__r_0.1500000000...	-0.007819	0.014891	0.022711	-290.438636######## 
+==================================================
+
+
+Feature Addition DataFrame for DGS10: 
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	2	CPILFESL__longest_strike_below_mean	0.008884	0.009165	0.000281	3.159111+++
+Round	Feature Dropped	MSE Before Dropping	MSE After Dropping	Improvement	% Improvement
+0	2	CPILFESL__longest_strike_below_mean	0.008540590706576288	0.004383200143622373	0.000625	7.312165
+1	3	AAA__cid_ce__normalize_False	0.014098785216531047	0.010260319353977799	0.000060	0.428344#####
+==================================================
+
+
+Feature Addition DataFrame for AAA: 
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	2	DGS10__time_reversal_asymmetry_statistic__lag_2	0.002621	0.010512	0.007891	301.057106
+1	2	GDP__quantile__q_0.2	0.002680	0.010512	0.007832	292.255260
+2	2	GDP__quantile__q_0.4	0.002723	0.010512	0.007789	286.006959
+3	3	GDPCTPI__count_below__t_0	0.005064	0.007899	0.002835	55.972145
+4	3	EXPGS__sum_of_reoccurring_values	0.005106	0.007899	0.002793	54.712840
+5	3	FGCE__c3__lag_1	0.005113	0.007899	0.002785	54.471622
+6	4	GDPCTPI__count_below__t_0	0.007677	0.007899	0.000221	2.885089
+7	4	EXPGS__sum_of_reoccurring_values	0.007719	0.007899	0.000180	2.335628
+8	4	FGCE__c3__lag_1	0.007727	0.007899	0.000172	2.230034
+9	5	GDPCTPI__count_below__t_0	0.007677	0.007899	0.000221	2.885089
+10	5	EXPGS__sum_of_reoccurring_values	0.007719	0.007899	0.000180	2.335628
+11	5	FGCE__c3__lag_1	0.007727	0.007899	0.000172	2.230034++++
+Round	Feature Dropped	MSE Before Dropping	MSE After Dropping	Improvement	% Improvement
+0	1	PAYEMS__mean	0.008713729687879758	0.004794638579290796	0.007939	91.107739
+1	1	BAA__ratio_beyond_r_sigma__r_2	0.008713729687879758	0.004794638579290796	0.007675	88.078517
+2	2	DGS10__time_reversal_asymmetry_statistic__lag_2	0.008254629133549069	0.0045037364234185575	0.002257	27.346404
+3	3	EXPGS__sum_of_reoccurring_values	0.008254629133549069	0.0045037364234185575	0.000221	2.673803
+4	3	GDPCTPI__count_below__t_0	0.008254629133549069	0.0045037364234185575	0.000152	1.835418
+5	3	FGCE__c3__lag_1	0.008254629133549069	0.0045037364234185575	0.000090	1.095387
+6	4	EXPGS__sum_of_reoccurring_values	0.008254629133549069	0.0045037364234185575	0.000221	2.673803
+7	4	GDPCTPI__count_below__t_0	0.008254629133549069	0.0045037364234185575	0.000152	1.835418
+8	4	FGCE__c3__lag_1	0.008254629133549069	0.0045037364234185575	0.000090	1.095387
+9	5	EXPGS__sum_of_reoccurring_values	0.008254629133549069	0.0045037364234185575	0.000221	2.673803
+10	5	GDPCTPI__count_below__t_0	0.008254629133549069	0.0045037364234185575	0.000152	1.835418
+11	5	FGCE__c3__lag_1	0.008254629133549069	0.0045037364234185575	0.000090	1.095387####### 
+==================================================
+
+
+Feature Addition DataFrame for BAA:
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	2	CUSR0000SAH1__symmetry_looking__r_0.1500000000...	0.006993	0.007350	0.000357	5.112283
+1	2	DGS2__symmetry_looking__r_0.2	0.007049	0.007350	0.000302	4.280764
+2	3	CPILFESL__maximum	0.007030	0.007241	0.000211	2.996903
+3	4	PAYEMS__large_standard_deviation__r_0.15000000...	0.006797	0.007061	0.000264	3.879589
+4	4	UNRATE__large_standard_deviation__r_0.2	0.006833	0.007061	0.000228	3.330534
+5	4	GDP__number_peaks__n_10	0.006839	0.007061	0.000222	3.243216
+6	5	GDPCTPI__number_peaks__n_50	0.007012	0.007123	0.000110	1.575131+++++
+Round	Feature Dropped	MSE Before Dropping	MSE After Dropping	Improvement	% Improvement
+0	1	WTISPLC__time_reversal_asymmetry_statistic__lag_3	0.007354106221317776	0.0038817963340641148	0.000115	1.562418
+1	2	CUSR0000SAH1__symmetry_looking__r_0.1500000000...	0.00737015968292546	0.004060221429048629	0.000196	2.656410
+2	4	UNRATE__large_standard_deviation__r_0.2	0.006977268552243577	0.003814271675128076	0.000047	0.676432
+3	4	GDP__number_peaks__n_10	0.006977268552243577	0.003814271675128076	0.000027	0.391008
+4	5	GDPCTPI__number_peaks__n_50	0.006954154956485399	0.003827753866119053	0.000038	0.546649######
+==================================================
+
+
+Feature Addition DataFrame for WTISPLC:
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	2	DGS10__mean	28.342354	28.509388	0.167034	0.589344
+1	3	GCE__index_mass_quantile__q_0.4	28.462578	28.490301	0.027723	0.097401
+2	4	CPIAUCSL__ratio_beyond_r_sigma__r_2.5	28.434060	28.456420	0.022359	0.078635
+3	5	AAA__energy_ratio_by_chunks__num_segments_10__...	28.459167	28.460910	0.001743	0.006125
+4	5	BAA__energy_ratio_by_chunks__num_segments_10__...	28.460568	28.460910	0.000342	0.001203###### 
+==================================================
+
+
+Feature Addition DataFrame for IMPGS: 
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	3	PCE__last_location_of_maximum	-0.000139	0.000152	0.000291	-208.976249
+1	4	AAA__last_location_of_minimum	0.000105	0.000130	0.000025	23.397499
+2	5	FEDFUNDS__percentage_of_reoccurring_datapoints...	0.000127	0.000139	0.000012	9.692504
+3	5	PNFI__ratio_beyond_r_sigma__r_2.5	0.000129	0.000139	0.000010	8.157630+++++
+Round	Feature Dropped	MSE Before Dropping	MSE After Dropping	Improvement	% Improvement
+0	2	CPILFESL__ratio_beyond_r_sigma__r_5	0.0007688346593466573	0.00017381523071469536	0.000001	0.194259
+1	4	AAA__last_location_of_minimum	0.0001267955690781292	6.461454235199283e-05	0.000004	2.775929
+2	5	FEDFUNDS__percentage_of_reoccurring_datapoints...	0.0001520094960760273	6.909936970371606e-05	0.000018	12.007153
+3	5	PNFI__ratio_beyond_r_sigma__r_2.5	0.0001520094960760273	6.909936970371606e-05	0.000014	9.005613####### 
+==================================================
+
+
+Feature Addition DataFrame for GCE: 
+
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	2	BAA__lempel_ziv_complexity__bins_2	0.000124	0.000169	0.000045	36.174935
+1	2	EXPGS__median	0.000126	0.000169	0.000043	33.853793
+2	3	BAA__lempel_ziv_complexity__bins_2	0.000124	0.000169	0.000045	36.174935
+3	3	EXPGS__median	0.000126	0.000169	0.000043	33.853793
+4	4	BAA__lempel_ziv_complexity__bins_2	0.000124	0.000169	0.000045	36.174935
+5	4	EXPGS__median	0.000126	0.000169	0.000043	33.853793
+6	5	BAA__lempel_ziv_complexity__bins_2	0.000124	0.000169	0.000045	36.174935
+7	5	EXPGS__median	0.000126	0.000169	0.000043	33.853793+++++ 
+Round	Feature Dropped	MSE Before Dropping	MSE After Dropping	Improvement	% Improvement
+0	1	BAA__lempel_ziv_complexity__bins_2	N/A	N/A	0.000038	None
+1	1	EXPGS__median	N/A	N/A	0.000016	None
+2	2	BAA__lempel_ziv_complexity__bins_2	N/A	N/A	0.000038	None
+3	2	EXPGS__median	N/A	N/A	0.000016	None
+4	3	BAA__lempel_ziv_complexity__bins_2	N/A	N/A	0.000038	None
+5	3	EXPGS__median	N/A	N/A	0.000016	None
+6	4	BAA__lempel_ziv_complexity__bins_2	N/A	N/A	0.000038	None
+7	4	EXPGS__median	N/A	N/A	0.000016	None
+8	5	BAA__lempel_ziv_complexity__bins_2	N/A	N/A	0.000038	None
+9	5	EXPGS__median	N/A	N/A	0.000016	None#######
+==================================================
+
+
+Feature Addition DataFrame for FGCE: 
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	2	CUSR0000SAH1__value_count__value_0	0.000498	0.000543	0.000046	9.164494
+1	4	GDPCTPI__count_above__t_0	0.000579	0.000581	0.000002	0.293217+++++
+Round	Feature Dropped	MSE Before Dropping	MSE After Dropping	Improvement	% Improvement
+0	2	GDPCTPI__count_above__t_0	0.0005148497245213266	0.00025000493419959877	0.000044	8.595789
+1	4	GDPCTPI__count_above__t_0	0.000522053678755022	0.0002682132768111469	0.000072	13.708714
+2	4	CUSR0000SAH1__value_count__value_0	0.000522053678755022	0.0002682132768111469	0.000042	7.960103
+3	4	PCEPILFE__index_mass_quantile__q_0.3	0.000522053678755022	0.0002682132768111469	0.000032	6.092537######
+==================================================
+
+
+Feature Addition DataFrame for PCEPI:
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	2	PCEPI__sum_values	0.000043	0.000047	4.317153e-06	10.122870
+1	2	GCE__last_location_of_maximum	0.000043	0.000047	3.692710e-06	8.533724
+2	3	PCEPI__sum_values	0.000046	0.000047	1.116294e-06	2.423411
+3	3	PAYEMS__index_mass_quantile__q_0.9	0.000046	0.000047	7.045398e-07	1.515965
+4	4	DGS5__quantile__q_0.7	0.000042	0.000047	5.710368e-06	13.737442
+5	5	GCE__last_location_of_maximum	0.000038	0.000044	5.932247e-06	15.497989
+6	5	CPIAUCSL__last_location_of_minimum	0.000040	0.000044	4.689406e-06	11.865795
+7	5	GDPCTPI__lempel_ziv_complexity__bins_10	0.000040	0.000044	4.337113e-06	10.877409++++
+Round	Feature Dropped	MSE Before Dropping	MSE After Dropping	Improvement	% Improvement
+0	1	BAA__variation_coefficient	5.279254139617509e-05	2.675528510817983e-05	2.521667e-06	4.776559
+1	1	INDPRO__lempel_ziv_complexity__bins_5	5.279254139617509e-05	2.675528510817983e-05	1.600193e-06	3.031097
+2	2	PCEPI__sum_values	5.038254163233388e-05	2.5055848532795775e-05	5.726962e-07	1.136696
+3	4	GCE__last_location_of_maximum	4.6111430012815265e-05	2.2541731858082014e-05	2.072438e-06	4.494413
+4	5	GDPCTPI__lempel_ziv_complexity__bins_10	4.6111430012815265e-05	2.2541731858082014e-05	2.379176e-06	5.159623
+5	5	GCE__last_location_of_maximum	4.6111430012815265e-05	2.2541731858082014e-05	2.043809e-06	4.432326
+6	5	CPIAUCSL__last_location_of_minimum	4.6111430012815265e-05	2.2541731858082014e-05	1.904648e-06	4.130534##### 
+==================================================
+
+
+Feature Addition DataFrame for PCEPILFE: 
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	2	HOUST__number_peaks__n_50	0.000023	0.000023	1.130153e-07	0.498259
+1	2	DGS2__number_peaks__n_50	0.000023	0.000023	8.175948e-08	0.359963
+2	3	HOUST__sum_of_reoccurring_values	0.000022	0.000022	3.155897e-07	1.423162
+3	4	WTISPLC__minimum	0.000022	0.000022	1.135664e-08	0.050578
+4	5	UNRATE__absolute_maximum	0.000022	0.000022	3.813248e-09	0.016981
+5	5	DGS2__maximum	0.000022	0.000022	3.383923e-09	0.015069
+6	5	DGS5__symmetry_looking__r_0.05	0.000022	0.000022	2.292352e-09	0.010208######## 
+==================================================
+
+
+Feature Addition DataFrame for PAYEMS: 
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	2	PAYEMS__index_mass_quantile__q_0.8	0.004961	0.005115	0.000154	3.110143
+1	2	EXPGS__lempel_ziv_complexity__bins_3	0.005016	0.005115	0.000099	1.968966
+2	3	DGS2__variation_coefficient	0.004802	0.004967	0.000165	3.432240
+3	3	GCE__mean	0.004867	0.004967	0.000100	2.056735
+4	5	INDPRO__lempel_ziv_complexity__bins_3	0.004726	0.004766	0.000040	0.848742
+5	5	HOUST__lempel_ziv_complexity__bins_5	0.004733	0.004766	0.000033	0.701687
+6	5	DSPI__energy_ratio_by_chunks__num_segments_10_...	0.004744	0.004766	0.000022	0.467906+++
+Round	Feature Dropped	MSE Before Dropping	MSE After Dropping	Improvement	% Improvement
+0	2	EXPGS__approximate_entropy__m_2__r_0.1	0.0050714406202631976	0.0025562079033993896	0.000044	0.858107
+1	3	GCE__mean	0.004950147178344719	0.002484550333787296	0.000023	0.465166###### 
+==================================================
+
+
+Feature Addition DataFrame for UNRATE: 
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	2	UNRATE__sum_values	0.856333	0.911776	0.055443	6.474438
+1	2	UNRATE__mean	0.867447	0.911776	0.044328	5.110203
+2	3	UNRATE__last_location_of_minimum	0.873100	0.890178	0.017077	1.955951
+3	3	PCEPI__first_location_of_minimum	0.875461	0.890178	0.014717	1.681007
+4	4	INDPRO__lempel_ziv_complexity__bins_10	0.889422	0.893373	0.003952	0.444297
+5	4	PCEPILFE__energy_ratio_by_chunks__num_segments...	0.889594	0.893373	0.003779	0.424844
+6	5	GCE__ratio_beyond_r_sigma__r_2.5	0.879572	0.886583	0.007011	0.797112+++ 
+Round	Feature Dropped	MSE Before Dropping	MSE After Dropping	Improvement	% Improvement
+0	3	CPILFESL__last_location_of_maximum	0.8883171812432922	0.43742777135400185	0.001860	0.209427
+1	4	INDPRO__lempel_ziv_complexity__bins_10	0.8900484269770388	0.43740199375286776	0.008568	0.962645
+2	4	UNRATE__sum_values	0.8900484269770388	0.43740199375286776	0.001937	0.217621
+3	5	PCEPI__first_location_of_minimum	0.8918977562255643	0.44238802462855287	0.003045	0.341419##### 
+==================================================
+
+
+Feature Addition DataFrame for INDPRO: 
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	2	INDPRO__last_location_of_maximum	0.006172	0.006586	0.000414	6.713935
+1	2	IMPGS__first_location_of_minimum	0.006411	0.006586	0.000175	2.728600
+2	3	INDPRO__variation_coefficient	0.006088	0.006311	0.000224	3.675020
+3	3	CPILFESL__variation_coefficient	0.006099	0.006311	0.000213	3.485277
+4	3	DSPI__approximate_entropy__m_2__r_0.1	0.006103	0.006311	0.000208	3.408045
+5	4	PAYEMS__lempel_ziv_complexity__bins_100	0.006003	0.006134	0.000131	2.189867
+6	5	IMPGS__energy_ratio_by_chunks__num_segments_10...	0.006051	0.006099	0.000048	0.790738
+7	5	IMPGS__index_mass_quantile__q_0.7	0.006088	0.006099	0.000010	0.167091
+8	5	CUSR0000SAH1__ratio_value_number_to_time_serie...	0.006095	0.006099	0.000003	0.051174++++
+Round	Feature Dropped	MSE Before Dropping	MSE After Dropping	Improvement	% Improvement
+0	2	INDPRO__last_location_of_maximum	0.006480588948806938	0.0033157201982630803	0.000060	0.927178
+1	2	AAA__percentage_of_reoccurring_values_to_all_v...	0.006480588948806938	0.0033157201982630803	0.000043	0.670346
+2	3	INDPRO__abs_energy	0.006278066204262562	0.003117976753415063	0.000033	0.529642#### 
+==================================================
+
+
+Feature Addition DataFrame for CUMFNS: 
+Round	Feature Added	MSE Before Addition	MSE After Addition	Improvement	% Improvement
+0	2	CUMFNS__mean	3.137294	3.284582	0.147288	4.694740
+1	2	HOUST__lempel_ziv_complexity__bins_2	3.177331	3.284582	0.107251	3.375506
+2	3	DSPI__percentage_of_reoccurring_datapoints_to_...	2.440579	2.883678	0.443099	18.155498
+3	4	PNFI__count_above__t_0	2.789016	2.840362	0.051346	1.841024
+4	4	PNFI__count_below__t_0	2.798377	2.840362	0.041985	1.500342
+5	5	PNFI__count_above__t_0	2.824300	2.832331	0.008031	0.284354+++
+Round	Feature Dropped	MSE Before Dropping	MSE After Dropping	Improvement	% Improvement
+0	2	CUMFNS__last_location_of_maximum	2.9219675291535645	1.398097539519268	0.211085	7.224079
+1	2	AAA__number_peaks__n_1	2.9219675291535645	1.398097539519268	0.085393	2.922432
+2	3	HOUST__lempel_ziv_complexity__bins_2	3.4580481315528493	1.6562896391292528	0.009195	0.265894
+3	3	DSPI__percentage_of_reoccurring_datapoints_to_...	3.4580481315528493	1.6562896391292528	0.006237	0.180358
+4	4	PNFI__count_below__t_0	3.4580481315528493	1.6562896391292528	0.026002	0.751940
+5	4	PNFI__count_above__t_0	3.4580481315528493	1.6562896391292528	0.020703	0.598684#####

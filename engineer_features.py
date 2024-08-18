@@ -3,7 +3,6 @@ import random
 import sys
 import logging
 import warnings
-import charset_normalizer
 
 import numpy as np
 import pandas as pd
@@ -37,33 +36,11 @@ from funcs.engineer_features_funcs import (
 )
 from funcs.dvc_funcs import get_repo_bucket_client, dagshub_initialization
 
-# def drop_features(target, base_features,aggregated_baseline_mse,threshold,X_train_transformed, X_test_transformed, y_train_transformed, y_test_transformed):
-#     aggregated_mse_scores_dropped = []
-#     for feature in base_features:
-#         mse_scores, aggregated_mse = compute_mse_with_dropped_feature(X_train_transformed, X_test_transformed, y_train_transformed, y_test_transformed, base_features, feature)
-#         improvement = aggregated_baseline_mse - aggregated_mse
-#         improvement_status = "improved" if improvement > threshold else "worsened"
-#         aggregated_mse_scores_dropped.append((feature, aggregated_mse, improvement, improvement_status, mse_scores))
-
-#     # Sort and drop the least impactful features if they result in improvement
-#     aggregated_mse_scores_dropped.sort(key=lambda x: x[1])
-#     features_to_drop = [f for f in aggregated_mse_scores_dropped if f[2] > threshold]
-
-#     if not features_to_drop:
-#         print("No features were dropped as they did not improve the model.")
-#     else:
-#         for feature, _, improvement, _, _ in features_to_drop:
-#             base_features.remove(feature)
-#             print(f"Feature dropped: {feature}, Improvement: {improvement}")
-
-#     print("Feature Dropping Completed.")
-
-
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-def main(target, engineering_rounds, threshold, fc_parameters):
+def main(target, feature_addition_rounds, feature_dropping_threshold, fc_parameters, X_train, X_test, y_train, y_test):
     # Verify and initialize DVC remote configuration
     logger.debug("Calling dagshub_initialization()")
     dagshub_initialization()
@@ -73,20 +50,12 @@ def main(target, engineering_rounds, threshold, fc_parameters):
     random.seed(42)
     os.environ['PYTHONHASHSEED'] = str(42)
 
-    # Load data
-    logger.debug("Loading data")
-    X_train_transformed = pd.read_csv('data/processed/X_train_transformed.csv', index_col='Date', parse_dates=True)
-    X_test_transformed = pd.read_csv('data/processed/X_test_transformed.csv', index_col='Date', parse_dates=True)
-    y_train_transformed = pd.read_csv('data/processed/y_train_transformed.csv', index_col='Date', parse_dates=True)
-    y_test_transformed = pd.read_csv('data/processed/y_test_transformed.csv', index_col='Date', parse_dates=True)
-    logger.debug("Data loaded successfully")
-
     # Combine X and y dataframes for feature engineering
-    train_combined = pd.concat([X_train_transformed, y_train_transformed], axis=1)
-    test_combined = pd.concat([X_test_transformed, y_test_transformed], axis=1)
+    train_combined = pd.concat([X_train, y_train], axis=1)
+    test_combined = pd.concat([X_test, y_test], axis=1)
 
     # Ensure the column names are preserved
-    base_features = list(X_train_transformed.columns)
+    base_features = list(X_train.columns)
 
     # Suppress Optuna logging
     optuna.logging.set_verbosity(optuna.logging.WARNING)
@@ -99,7 +68,7 @@ def main(target, engineering_rounds, threshold, fc_parameters):
     # Initial baseline MSE calculation
     logger.debug("Calculating initial baseline MSE")
     baseline_mse_scores, aggregated_baseline_mse, best_params = compute_mse_scores(
-        X_train_transformed, X_test_transformed, y_train_transformed, y_test_transformed, base_features
+        X_train, X_test, y_train, y_test, base_features
     )
 
     logger.debug(f"Baseline MSE Scores: {baseline_mse_scores}")
@@ -109,19 +78,30 @@ def main(target, engineering_rounds, threshold, fc_parameters):
     initial_mse_xgboost = baseline_mse_scores['XGBoost']
     initial_mse_lightgbm = baseline_mse_scores['LightGBM']
 
-    # Save best params as dictionaries
-    xgboost_params = best_params['XGBoost']
-    lightgbm_params = best_params['LightGBM']
+    # Scale the data
+    logger.debug("Scaling the data")
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+    logger.debug("Data scaled successfully")
 
-    # Save to a Python file
+    # Optimize parameters
+    logger.debug("Optimizing XGBoost parameters")
+    xgboost_params = optimize_params('XGBoost', X_train_scaled, y_train, X_test_scaled, y_test, n_trials=10)
+
+    logger.debug("Optimizing LightGBM parameters")
+    lightgbm_params = optimize_params('LightGBM', X_train_scaled, y_train, X_test_scaled, y_test, n_trials=10)
+
+    # Save as dictionaries to a Python file
+    logger.debug("Saving best parameters to a Python file")
     with open('best_params.py', 'w') as f:
         f.write(f"xgboost_params = {xgboost_params}\n")
         f.write(f"lightgbm_params = {lightgbm_params}\n")
 
     logger.debug("Best parameters saved to best_params.py")
 
-    # Skip TSFRESH feature engineering if engineering_rounds is 0
-    if engineering_rounds > 0:
+    # Skip TSFRESH feature engineering if feature_addition_rounds is 0
+    if feature_addition_rounds > 0:
         # Add ID and time columns required by TSFRESH
         train_combined['id'] = 1
         train_combined['time'] = train_combined.index
@@ -144,18 +124,18 @@ def main(target, engineering_rounds, threshold, fc_parameters):
 
         # Initialize the baseline MSE without adding any new feature
         baseline_mse_scores, aggregated_baseline_mse = compute_baseline_mse(
-            X_train_transformed, X_test_transformed, y_train_transformed, y_test_transformed, base_features
+            X_train, X_test, y_train, y_test, base_features
         )
         initial_baseline_mse = aggregated_baseline_mse
 
         # TSFRESH feature selection rounds with parallel processing
-        for round_num in range(engineering_rounds):
-            logger.debug(f"Round {round_num + 1}/{engineering_rounds} of feature engineering")
+        for round_num in range(feature_addition_rounds):
+            logger.debug(f"Round {round_num + 1}/{feature_addition_rounds} of feature engineering")
 
             # Evaluate adding features in parallel
             results = Parallel(n_jobs=-1)(delayed(evaluate_feature)(
-                feature, tsfresh_features_train, tsfresh_features_test, X_train_transformed, X_test_transformed,
-                y_train_transformed, y_test_transformed, base_features, aggregated_baseline_mse, all_added_features
+                feature, tsfresh_features_train, tsfresh_features_test, X_train, X_test,
+                y_train, y_test, base_features, aggregated_baseline_mse, all_added_features
             ) for feature in tsfresh_features_train.columns)
             aggregated_mse_scores_added = [res for res in results if res is not None]
 
@@ -168,44 +148,39 @@ def main(target, engineering_rounds, threshold, fc_parameters):
                 continue
 
             for feature, _, improvement, _, _ in top_three_to_add:
+                improvement = float(improvement)
                 base_features.append(feature)
                 all_added_features.append(feature)
-                X_train_transformed[feature] = tsfresh_features_train[feature]
-                X_test_transformed[feature] = tsfresh_features_test[feature]
+                X_train[feature] = tsfresh_features_train[feature]
+                X_test[feature] = tsfresh_features_test[feature]
                 logger.debug(f"Feature added: {feature}, Improvement: {improvement}")
 
                 # Update baseline MSE after adding each feature
                 baseline_mse_scores, aggregated_baseline_mse = compute_mse_with_added_feature(
-                    X_train_transformed, X_test_transformed, y_train_transformed, y_test_transformed, base_features, feature
+                    X_train, X_test, y_train, y_test, base_features, feature
                 )
 
         # Calculate overall improvement
         overall_improvement = initial_baseline_mse - aggregated_baseline_mse
-        logger.debug(f"\nOverall Improvement in MSE after {engineering_rounds} rounds: {overall_improvement}")
+        logger.debug(f"\nOverall Improvement in MSE after {feature_addition_rounds} rounds: {overall_improvement}")
 
         # Use base_features and all_added_features to filter out features that weren't picked
         all_features = list(set(base_features + all_added_features))
-        X_train_transformed = X_train_transformed[all_features]
-        X_test_transformed = X_test_transformed[all_features]
+        X_train = X_train[all_features]
+        X_test = X_test[all_features]
 
         logger.debug("Feature Addition Complete")
 
-    # Set a higher threshold for improvement
-    threshold = float(threshold) * aggregated_baseline_mse
+    # Set a higher threshold for improvement (e.g., 0.05% of the initial baseline MSE)
+    feature_dropping_threshold = float(feature_dropping_threshold)
+    threshold = feature_dropping_threshold * ((baseline_mse_scores['XGBoost'] + baseline_mse_scores['LightGBM']) / 2)
 
-    # Function to drop features
-    # FUNCTION MUST BE LEFT HERE: DO NOT MOVE
-
-    all_features = list(set(base_features + all_added_features))
-    X_train_transformed = X_train_transformed[all_features]
-    X_test_transformed = X_test_transformed[all_features]
-
-    # Example usage: (I Just dropped the whole function here)
-    # drop_features(target, base_features,aggregated_baseline_mse,threshold,X_train_transformed, X_test_transformed, y_train_transformed, y_test_transformed)
+    # Calculate and drop features
     aggregated_mse_scores_dropped = []
     for feature in base_features:
-        mse_scores, aggregated_mse = compute_mse_with_dropped_feature(X_train_transformed, X_test_transformed, y_train_transformed, y_test_transformed, base_features, feature)
+        mse_scores, aggregated_mse = compute_mse_with_dropped_feature(X_train, X_test, y_train, y_test, base_features, feature)
         improvement = aggregated_baseline_mse - aggregated_mse
+
         improvement_status = "improved" if improvement > threshold else "worsened"
         aggregated_mse_scores_dropped.append((feature, aggregated_mse, improvement, improvement_status, mse_scores))
 
@@ -221,9 +196,10 @@ def main(target, engineering_rounds, threshold, fc_parameters):
             print(f"Feature dropped: {feature}, Improvement: {improvement}")
 
     print("Feature Dropping Completed.")
+
     # Final baseline MSE calculation
     final_mse_scores, aggregated_final_mse, _ = compute_mse_scores(
-        X_train_transformed, X_test_transformed, y_train_transformed, y_test_transformed, base_features
+        X_train, X_test, y_train, y_test, base_features
     )
     # Store final MSE scores for each model
     final_mse_xgboost = final_mse_scores['XGBoost']
@@ -244,7 +220,6 @@ def main(target, engineering_rounds, threshold, fc_parameters):
     print(f"Final MSE for LightGBM: {final_mse_lightgbm}")
     print(f"Improvement in MSE for LightGBM: {improvement_lightgbm}")
 
-
     # Print the results
     logger.debug(f"Initial MSE for XGBoost: {initial_mse_xgboost}")
     logger.debug(f"Final MSE for XGBoost: {final_mse_xgboost}")
@@ -257,10 +232,10 @@ def main(target, engineering_rounds, threshold, fc_parameters):
     # Save Data using S3 buckets and .csv files
     if not os.path.exists('data/engineered'):
         os.makedirs('data/engineered')
-    X_train_transformed.to_csv('data/engineered/X_train_engineered.csv', index=True)
-    X_test_transformed.to_csv('data/engineered/X_test_engineered.csv', index=True)
-    y_train_transformed.to_csv('data/engineered/y_train_engineered.csv', index=True)
-    y_test_transformed.to_csv('data/engineered/y_test_engineered.csv', index=True)
+    X_train.to_csv('data/engineered/X_train_engineered.csv', index=True)
+    X_test.to_csv('data/engineered/X_test_engineered.csv', index=True)
+    y_train.to_csv('data/engineered/y_train_engineered.csv', index=True)
+    y_test.to_csv('data/engineered/y_test_engineered.csv', index=True)
 
     logger.debug("Engineered data saved locally.")
 
@@ -292,8 +267,12 @@ def main(target, engineering_rounds, threshold, fc_parameters):
 if __name__ == '__main__':
     target = get_target_arg()
     feature_addition_rounds = get_feature_addition_rounds_arg()
-    feature_dropping_threshold = get_feature_dropping_threshold_arg()
-    tsfresh_fc_params = get_tsfresh_fc_params_arg()
+    feature_dropping_threshold = float(get_feature_dropping_threshold_arg())
+    tsfresh_fc_params = str(get_tsfresh_fc_params_arg())
+    X_train = pd.read_csv('data/processed/X_train_transformed.csv', index_col='Date', parse_dates=True)
+    y_train = pd.read_csv('data/processed/y_train_transformed.csv', index_col='Date', parse_dates=True)
+    y_test = pd.read_csv('data/processed/y_test_transformed.csv', index_col='Date', parse_dates=True)
+    X_test = pd.read_csv('data/processed/X_test_transformed.csv', index_col='Date', parse_dates=True)
 
     # Map the string to the appropriate TSFRESH parameter object
     if tsfresh_fc_params == 'MinimalFCParameters':
@@ -306,7 +285,8 @@ if __name__ == '__main__':
         # Default to MinimalFCParameters if the provided value is invalid
         fc_parameters = MinimalFCParameters()
         logger.debug("Invalid TSFRESH feature extraction parameters. Defaulting to 'MinimalFCParameters'.")
-        
-    logger.debug("Starting main function")
-    main(target, threshold=feature_dropping_threshold, fc_parameters=fc_parameters,engineering_rounds=feature_addition_rounds)
-    logger.debug("Main function finished")
+        print("Invalid TSFRESH feature extraction parameters. Choose from: 'MinimalFCParameters','EfficientFCParameters','ComprehensiveFCParameters'.")
+
+    logger.debug("Starting feature engineering")
+    main(target, feature_addition_rounds, feature_dropping_threshold, fc_parameters, X_train, X_test, y_train, y_test)
+    logger.debug("Feature engineering finished")

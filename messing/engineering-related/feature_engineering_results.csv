@@ -1,0 +1,2 @@
+target,initial_xgboost_mse,initial_lightgbm_mse,final_xgboost_mse,final_lightgbm_mse,initial_aggregated_mse,final_aggregated_mse,improvement,final_feature_space
+FEDFUNDS,0.00328038434112116,0.0027418522704716754,0.00328038434112116,0.0027418522704716754,0.006022236611592836,0.006022236611592836,0.0,"['FEDFUNDS', 'GDP', 'CPIAUCSL', 'CUSR0000SAH1', 'CPILFESL', 'PCE', 'PRFI', 'PNFI', 'EXPGS', 'HOUST', 'DSPI', 'DGS2', 'DGS5', 'DGS10', 'AAA', 'BAA', 'WTISPLC', 'IMPGS', 'GCE', 'FGCE', 'GDPCTPI', 'USREC', 'PCEPI', 'PCEPILFE', 'PAYEMS', 'UNRATE', 'INDPRO', 'CUMFNS']"

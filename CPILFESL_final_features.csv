@@ -1,0 +1,16 @@
+features
+"PAYEMS__cwt_coefficients__coeff_0__w_2__widths_(2, 5, 10, 20)"
+"PNFI__cwt_coefficients__coeff_0__w_2__widths_(2, 5, 10, 20)"
+"DGS2__cwt_coefficients__coeff_0__w_2__widths_(2, 5, 10, 20)"
+"DSPI__cwt_coefficients__coeff_0__w_2__widths_(2, 5, 10, 20)"
+DGS10__minimum
+"UNRATE__cwt_coefficients__coeff_0__w_2__widths_(2, 5, 10, 20)"
+EXPGS__symmetry_looking__r_0.1
+GDP__symmetry_looking__r_0.05
+DGS2__large_standard_deviation__r_0.30000000000000004
+"BAA__cwt_coefficients__coeff_0__w_2__widths_(2, 5, 10, 20)"
+CUSR0000SAH1__symmetry_looking__r_0.1
+"AAA__cwt_coefficients__coeff_0__w_2__widths_(2, 5, 10, 20)"
+INDPRO__symmetry_looking__r_0.05
+CUSR0000SAH1__symmetry_looking__r_0.15000000000000002
+FEDFUNDS__absolute_maximum
