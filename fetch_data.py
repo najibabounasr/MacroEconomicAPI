@@ -8,7 +8,7 @@ from funcs.api_funcs import get_target_arg
 from dagshub import get_repo_bucket_client
 import sys
 
-def fetch_all_data(target_feature):
+def fetch_all_data():
     # Initialize FRED API with your API key
     fred = Fred(api_key=settings['api_key'])
 
@@ -25,16 +25,16 @@ def fetch_all_data(target_feature):
 
     # Combine all data into a single DataFrame
     combined_data = pd.concat(data_frames.values(), axis=1, keys=data_frames.keys())
-    combined_data = combined_data.asfreq('MS')
+    combined_data = combined_data.resample('M').last()
     combined_data.index.name = 'Date'
 
     # Drop a level from the multi-level columns
     combined_data.columns = combined_data.columns.droplevel(1)
 
     # Ensure the target feature is included in the dataset
-    if target_feature not in combined_data.columns:
-        valid_features = ", ".join(combined_data.columns)
-        raise ValueError(f"Target feature '{target_feature}' is not available in the dataset. Valid features are: {valid_features}")
+    # if target_feature not in combined_data.columns:
+    #     valid_features = ", ".join(combined_data.columns)
+    #     raise ValueError(f"Target feature '{target_feature}' is not available in the dataset. Valid features are: {valid_features}")
 
     # Save raw data locally
     if not os.path.exists('data/raw'):
@@ -54,10 +54,10 @@ def fetch_all_data(target_feature):
 
 def main():
     dagshub_initialization()
-    if len(sys.argv) < 2:
-        raise ValueError("No target feature provided. Please specify the target feature.")
-    target_feature = get_target_arg()
-    fetch_all_data(target_feature)
+    # if len(sys.argv) < 2:
+    #     raise ValueError("No target feature provided. Please specify the target feature.")
+    # target_feature = get_target_arg()
+    fetch_all_data()
     print("Fetch Data Stage Completed")
 
 if __name__ == "__main__":
